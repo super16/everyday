@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Everyday</title>
   </head>
-  <body>
+  <body id="app">
     <h1>Everyday</h1>
-    <p>Todo app for everyday tasks</p>
-    <ul>
-      <li><input type="checkbox" /> Task # 1</li>
-      <li><input type="checkbox" /> Task # 2</li>
+    <p>What to do today:</p>
+    <ul id="tasksList">
     </ul>
-    <input type="text" />
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <form id="newTaskForm" action="javascript:void(0);">
+      <label for="newTask">New task</label>
+      <input id="newTask" type="text" required>
+      <input type="submit" value="Add" />
+    </form>
+    <script async type="module" src="/src/main.ts"></script>
   </body>
 </html>
