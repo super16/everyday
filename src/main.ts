@@ -1,5 +1,5 @@
 import "./style.css"
-import { addTask, fetchAllTasks, initDb } from "./db.ts"
+import { addTask, deleteTask, fetchAllTasks, initDb } from "./db.ts"
 import { initPWA } from "./pwa.ts"
 
 import type { TaskItem, TaskObject } from "./types"
@@ -24,8 +24,17 @@ const renderTasksList = (listObj: Element, tasks: TaskItem[]) => {
         id: task.id,
         type: "checkbox",
       })
+      const deleteButton = document.createElement("button")
+      deleteButton.textContent = "Delete task"
+      deleteButton.addEventListener("click", async () => {
+        await deleteTask(task.id)
+        listObj.dispatchEvent(
+          new CustomEvent("deleteTask", { detail: task.id }),
+        )
+      })
       listItem.appendChild(inputCheckbox)
       listItem.appendChild(checkboxLabel)
+      listItem.appendChild(deleteButton)
       listObj.appendChild(listItem)
     }
   }
@@ -66,5 +75,11 @@ window.onload = async () => {
         }
       }
     })
+  })
+
+  tasksList.addEventListener("deleteTask", (event: Event) => {
+    tasksProxy.tasks = tasksProxy.tasks.filter(
+      task => task.id !== (event as CustomEvent).detail,
+    )
   })
 }
