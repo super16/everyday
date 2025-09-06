@@ -1,5 +1,11 @@
 import "./style.css"
-import { addTask, deleteTask, fetchAllTasks, initDb } from "./db.ts"
+import {
+  addTask,
+  deleteTask,
+  fetchAllTasks,
+  initDb,
+  updateTaskState,
+} from "./db.ts"
 import { initPWA } from "./pwa.ts"
 
 import type { TaskItem, TaskObject } from "./types"
@@ -23,6 +29,15 @@ const renderTasksList = (listObj: Element, tasks: TaskItem[]) => {
       const inputCheckbox = Object.assign(document.createElement("input"), {
         id: task.id,
         type: "checkbox",
+      })
+      if (task.isCompleted) {
+        inputCheckbox.setAttribute("checked", "true")
+      }
+      inputCheckbox.addEventListener("change", async (event) => {
+        const { checked } = event.target as HTMLInputElement
+        if (task.isCompleted != checked) {
+          await updateTaskState(checked, task)
+        }
       })
       const deleteButton = document.createElement("button")
       deleteButton.textContent = "Delete task"

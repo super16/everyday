@@ -90,3 +90,29 @@ export const deleteTask = (taskId: number): Promise<void> => {
     }
   })
 }
+
+export const updateTaskState = (
+  checked: boolean,
+  task: TaskItem,
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const dbRequest = indexedDB.open(DB_NAME, DB_VERSION)
+    dbRequest.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result
+      const transaction = db.transaction([DB_TABLE_NAME], "readwrite")
+      const storageObject = transaction.objectStore(DB_TABLE_NAME)
+      const updateQuery = storageObject.put({
+        id: task.id,
+        task: task.task,
+        isCompleted: checked,
+        date: task.date,
+      })
+      updateQuery.onsuccess = () => {
+        return resolve()
+      }
+      updateQuery.onerror = () => {
+        return reject()
+      }
+    }
+  })
+}
